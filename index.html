@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ECN 241: Aura Retail Probability Lab</title>
+    <style>
+        :root {
+            --utica-navy: #0C223F;
+            --utica-orange: #E65300;
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+            --border: #cbd5e1;
+            --green: #10b981;
+            --blue: #3b82f6;
+            --red: #ef4444;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: var(--utica-navy);
+            color: white;
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 25px;
+            border-bottom: 5px solid var(--utica-orange);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0 0 5px 0;
+            font-size: 2.2rem;
+            letter-spacing: 0.5px;
+        }
+
+        header h2 {
+            margin: 0 0 10px 0;
+            font-size: 1.2rem;
+            color: var(--utica-orange);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        header p {
+            margin: 0;
+            color: #cbd5e1;
+            font-size: 1rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 24px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .tag-distribution {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .tag-box {
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .tag-green { background-color: var(--green); }
+        .tag-blue { background-color: var(--blue); }
+        .tag-red { background-color: var(--red); }
+
+        .tag-box span {
+            display: block;
+            font-size: 1.5rem;
+            margin-top: 5px;
+        }
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            background-color: var(--utica-orange);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #c44500;
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        button.secondary {
+            background-color: var(--utica-navy);
+        }
+        button.secondary:hover {
+            background-color: #061426;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: #f1f5f9;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-box h4 {
+            margin: 0 0 5px 0;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+
+        .stat-box .value {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: var(--utica-navy);
+        }
+
+        .history-log {
+            max-height: 150px;
+            overflow-y: auto;
+            background: #f8fafc;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            margin-top: 15px;
+        }
+
+        .question-section h3 {
+            color: var(--utica-navy);
+            margin-top: 0;
+            border-bottom: 2px solid var(--utica-orange);
+            padding-bottom: 8px;
+        }
+
+        .question-box {
+            background: #fff7ed;
+            border-left: 4px solid var(--utica-orange);
+            padding: 15px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 15px;
+        }
+
+        .question-box p {
+            margin: 0 0 10px 0;
+            font-weight: 600;
+            color: var(--utica-navy);
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            box-sizing: border-box;
+            margin-bottom: 5px;
+        }
+
+        @media (max-width: 600px) {
+            .tag-distribution, .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h2>ECN 241: Statistics for Management and Economics</h2>
+        <h1>Aura Retail Spin-to-Win Lab</h1>
+        <p>Utica University • Department of Business and Economics</p>
+    </header>
+
+    <!-- Section 1: The Inventory Box Model -->
+    <div class="card">
+        <h3 style="color: var(--utica-navy); margin-top:0; border-bottom: 2px solid var(--utica-orange); padding-bottom: 8px;">Step 1: The Promotional Tag Box (Classical vs. Empirical)</h3>
+        <p>Our promotional box contains exactly <strong>10 total tags</strong>. Draw tags to test how empirical results converge with classical theory over large sample sizes.</p>
+        
+        <div class="tag-distribution">
+            <div class="tag-box tag-green">
+                Green Tags (10% Off)
+                <span id="count-green">6</span>
+            </div>
+            <div class="tag-box tag-blue">
+                Blue Tags (20% Off)
+                <span id="count-blue">3</span>
+            </div>
+            <div class="tag-box tag-red">
+                Red Tags (50% Sale)
+                <span id="count-red">1</span>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button onclick="drawTag(1)">Draw 1 Tag</button>
+            <button onclick="drawTag(10)">Draw 10 Tags</button>
+            <button onclick="drawTag(100)">Draw 100 Tags</button>
+            <button class="secondary" onclick="resetStats()">Reset Data</button>
+        </div>
+
+        <div class="results-grid">
+            <div class="stat-box">
+                <h4>Total Draws</h4>
+                <div class="value" id="stat-total">0</div>
+            </div>
+            <div class="stat-box">
+                <h4>Green % (Empirical)</h4>
+                <div class="value" id="stat-green-pct">0.0%</div>
+            </div>
+            <div class="stat-box">
+                <h4>Blue % (Empirical)</h4>
+                <div class="value" id="stat-blue-pct">0.0%</div>
+            </div>
+            <div class="stat-box">
+                <h4>Red % (Empirical)</h4>
+                <div class="value" id="stat-red-pct">0.0%</div>
+            </div>
+        </div>
+
+        <div class="history-log" id="history-log">
+            Draw history log will appear here...
+        </div>
+    </div>
+
+    <!-- Section 2: Discussion & Student Prompts -->
+    <div class="card question-section">
+        <h3>Step 2: Live In-Class Analysis Prompts</h3>
+        <p>Answer the following questions as a team based on your simulation results and your ECN 241 probability rules:</p>
+
+        <div class="question-box">
+            <p>1. Classical Probability: What is the exact mathematical probability of drawing a Green tag on your very first try?</p>
+            <input type="text" placeholder="Type your answer or formula here (e.g., 6/10 = 0.60)...">
+        </div>
+
+        <div class="question-box">
+            <p>2. The Addition Rule: What is the probability of drawing <em>either</em> a Blue tag OR a Red tag in a single draw?</p>
+            <input type="text" placeholder="Type your calculation here...">
+        </div>
+
+        <div class="question-box">
+            <p>3. Sample Variation: Notice how the empirical percentages fluctuate when you only draw 1 tag versus 100 tags. What statistical law explains why 100 draws get much closer to the true classical probabilities?</p>
+            <input type="text" placeholder="Type your explanation here...">
+        </div>
+    </div>
+</div>
+
+<script>
+    let stats = {
+        total: 0,
+        green: 0,
+        blue: 0,
+        red: 0
+    };
+
+    const historyLog = document.getElementById('history-log');
+
+    function drawTag(numDraws) {
+        let newLogs = [];
+        for (let i = 0; i < numDraws; i++) {
+            let rand = Math.floor(Math.random() * 10);
+            let result = '';
+            
+            if (rand < 6) {
+                stats.green++;
+                result = 'Green (10% Off)';
+            } else if (rand < 9) {
+                stats.blue++;
+                result = 'Blue (20% Off)';
+            } else {
+                stats.red++;
+                result = 'Red (50% Sale)';
+            }
+            stats.total++;
+            if (numDraws <= 10) {
+                newLogs.push(`Draw #${stats.total}: Pulled a ${result}`);
+            }
+        }
+
+        if (numDraws > 10) {
+            historyLog.innerHTML = `[Batch Simulation] Drew ${numDraws} tags. Total trials now: ${stats.total}.<br>` + historyLog.innerHTML;
+        } else {
+            newLogs.reverse().forEach(log => {
+                historyLog.innerHTML = log + '<br>' + historyLog.innerHTML;
+            });
+        }
+
+        updateDisplay();
+    }
+
+    function resetStats() {
+        stats = { total: 0, green: 0, blue: 0, red: 0 };
+        historyLog.innerHTML = 'Data reset. Ready for new draws...';
+        updateDisplay();
+    }
+
+    function updateDisplay() {
+        document.getElementById('stat-total').innerText = stats.total;
+        
+        let gPct = stats.total > 0 ? ((stats.green / stats.total) * 100).toFixed(1) + '%' : '0.0%';
+        let bPct = stats.total > 0 ? ((stats.blue / stats.total) * 100).toFixed(1) + '%' : '0.0%';
+        let rPct = stats.total > 0 ? ((stats.red / stats.total) * 100).toFixed(1) + '%' : '0.0%';
+
+        document.getElementById('stat-green-pct').innerText = gPct;
+        document.getElementById('stat-blue-pct').innerText = bPct;
+        document.getElementById('stat-red-pct').innerText = rPct;
+    }
+</script>
+
+</body>
+</html>
